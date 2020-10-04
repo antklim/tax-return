@@ -36,3 +36,23 @@ func TestPeriodDays(t *testing.T) {
 		})
 	}
 }
+
+func TestFinancialYearStarting(t *testing.T) {
+	layout := "2006-01-02"
+	start, _ := time.Parse(layout, "2020-07-01")
+	end, _ := time.Parse(layout, "2021-06-30")
+
+	fy := taxreturn.FinancialYearStarting(2020)
+	assert.True(t, fy.Start.Equal(start))
+	assert.True(t, fy.End.Equal(end))
+}
+
+func TestFinancialYearEnding(t *testing.T) {
+	layout := "2006-01-02"
+	start, _ := time.Parse(layout, "2019-07-01")
+	end, _ := time.Parse(layout, "2020-06-30")
+
+	fy := taxreturn.FinancialYearEnding(2020)
+	assert.True(t, fy.Start.Equal(start))
+	assert.True(t, fy.End.Equal(end))
+}
