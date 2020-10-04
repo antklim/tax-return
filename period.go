@@ -4,18 +4,15 @@ import "time"
 
 // Period describes interface of the generic time period.
 type Period interface {
-	Days() int
 	Start() time.Time
 	End() time.Time
 }
 
-type period struct {
+// BillPeriod describes date period.
+type BillPeriod struct {
 	start time.Time
 	end   time.Time
 }
-
-// BillPeriod describes date period.
-type BillPeriod period
 
 // NewBillPeriod creates a new bill period.
 func NewBillPeriod(start, end time.Time) BillPeriod {
@@ -24,7 +21,8 @@ func NewBillPeriod(start, end time.Time) BillPeriod {
 
 // Days calculates amount of days in the period. Start and end dates are counted as part of period.
 func (p BillPeriod) Days() int {
-	return daysInPeriod(p) + 1
+	days := p.End().Sub(p.Start()).Hours() / 24
+	return int(days) + 1
 }
 
 // Start ...
@@ -38,7 +36,10 @@ func (p BillPeriod) End() time.Time {
 }
 
 // FinancialYear describes financial year.
-type FinancialYear period
+type FinancialYear struct {
+	start time.Time
+	end   time.Time
+}
 
 // FinancialYearStarting creates new financial year by starting year.
 func FinancialYearStarting(year int) FinancialYear {
@@ -54,11 +55,6 @@ func FinancialYearEnding(year int) FinancialYear {
 	return FinancialYear{start, end}
 }
 
-// Days days amount in financial year.
-func (fy FinancialYear) Days() int {
-	return daysInPeriod(fy)
-}
-
 // Start start date of financial year.
 func (fy FinancialYear) Start() time.Time {
 	return fy.start
@@ -67,9 +63,4 @@ func (fy FinancialYear) Start() time.Time {
 // End end date of financial year.
 func (fy FinancialYear) End() time.Time {
 	return fy.end
-}
-
-func daysInPeriod(p Period) int {
-	days := p.End().Sub(p.Start()).Hours() / 24
-	return int(days)
 }
