@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestPeriodDays(t *testing.T) {
+func TestBillPeriodDays(t *testing.T) {
 	testCases := []struct {
 		desc     string
 		start    time.Time
@@ -30,7 +30,7 @@ func TestPeriodDays(t *testing.T) {
 	}
 	for _, tC := range testCases {
 		t.Run(tC.desc, func(t *testing.T) {
-			period := taxreturn.Period{Start: tC.start, End: tC.end}
+			period := taxreturn.NewBillPeriod(tC.start, tC.end)
 			actual := period.Days()
 			assert.Equal(t, tC.expected, actual)
 		})
@@ -43,8 +43,8 @@ func TestFinancialYearStarting(t *testing.T) {
 	end, _ := time.Parse(layout, "2021-06-30")
 
 	fy := taxreturn.FinancialYearStarting(2020)
-	assert.True(t, fy.Start.Equal(start))
-	assert.True(t, fy.End.Equal(end))
+	assert.True(t, fy.Start().Equal(start))
+	assert.True(t, fy.End().Equal(end))
 }
 
 func TestFinancialYearEnding(t *testing.T) {
@@ -53,6 +53,6 @@ func TestFinancialYearEnding(t *testing.T) {
 	end, _ := time.Parse(layout, "2020-06-30")
 
 	fy := taxreturn.FinancialYearEnding(2020)
-	assert.True(t, fy.Start.Equal(start))
-	assert.True(t, fy.End.Equal(end))
+	assert.True(t, fy.Start().Equal(start))
+	assert.True(t, fy.End().Equal(end))
 }
