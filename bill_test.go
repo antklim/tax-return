@@ -2,17 +2,15 @@ package taxreturn_test
 
 import (
 	"testing"
-	"time"
-
-	"github.com/stretchr/testify/assert"
 
 	taxreturn "github.com/antklim/tax-return"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestPaidDaily(t *testing.T) {
-	period := taxreturn.NewBillPeriod(
-		time.Date(2020, 01, 01, 0, 0, 0, 0, time.UTC),
-		time.Date(2020, 01, 03, 0, 0, 0, 0, time.UTC))
+	period, err := taxreturn.NewBillPeriod("2020-01-01", "2020-01-03")
+	require.NoError(t, err)
 
 	bill := taxreturn.Bill{
 		Period:    period,
@@ -24,5 +22,11 @@ func TestPaidDaily(t *testing.T) {
 }
 
 func TestPaidIn(t *testing.T) {
-
+	for _, tC := range billPaidInTestCases {
+		t.Run(tC.desc, func(t *testing.T) {
+			actual := tC.bill.PaidIn(tC.period)
+			t.Logf("%.3f", actual)
+			assert.InDelta(t, tC.expected, actual, 0.0001)
+		})
+	}
 }

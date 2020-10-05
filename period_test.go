@@ -6,31 +6,33 @@ import (
 
 	taxreturn "github.com/antklim/tax-return"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestBillPeriodDays(t *testing.T) {
 	testCases := []struct {
 		desc     string
-		start    time.Time
-		end      time.Time
+		start    string
+		end      string
 		expected int
 	}{
 		{
 			desc:     "period with the same start and end date has duration of 1 day",
-			start:    time.Date(2020, 01, 01, 0, 0, 0, 0, time.UTC),
-			end:      time.Date(2020, 01, 01, 0, 0, 0, 0, time.UTC),
+			start:    "2020-01-01",
+			end:      "2020-01-01",
 			expected: 1,
 		},
 		{
 			desc:     "period different start and end dates",
-			start:    time.Date(2020, 01, 01, 0, 0, 0, 0, time.UTC),
-			end:      time.Date(2020, 01, 03, 0, 0, 0, 0, time.UTC),
+			start:    "2020-01-01",
+			end:      "2020-01-03",
 			expected: 3,
 		},
 	}
 	for _, tC := range testCases {
 		t.Run(tC.desc, func(t *testing.T) {
-			period := taxreturn.NewBillPeriod(tC.start, tC.end)
+			period, err := taxreturn.NewBillPeriod(tC.start, tC.end)
+			require.NoError(t, err)
 			actual := period.Days()
 			assert.Equal(t, tC.expected, actual)
 		})

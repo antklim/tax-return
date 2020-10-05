@@ -14,15 +14,26 @@ type BillPeriod struct {
 	end   time.Time
 }
 
-// NewBillPeriod creates a new bill period.
-func NewBillPeriod(start, end time.Time) BillPeriod {
-	return BillPeriod{start, end}
+// NewBillPeriod creates a new bill period, start and end dates are in fomat YYYY-MM-DD.
+func NewBillPeriod(periodStart, periodEnd string) (BillPeriod, error) {
+	layout := "2006-01-02"
+
+	start, err := time.Parse(layout, periodStart)
+	if err != nil {
+		return BillPeriod{}, err
+	}
+
+	end, err := time.Parse(layout, periodEnd)
+	if err != nil {
+		return BillPeriod{}, err
+	}
+
+	return BillPeriod{start: start, end: end}, nil
 }
 
 // Days calculates amount of days in the period. Start and end dates are counted as part of period.
 func (p BillPeriod) Days() int {
-	days := p.End().Sub(p.Start()).Hours() / 24
-	return int(days) + 1
+	return DaysInPeriod(p.Start(), p.End()) + 1
 }
 
 // Start ...
@@ -63,4 +74,10 @@ func (fy FinancialYear) Start() time.Time {
 // End end date of financial year.
 func (fy FinancialYear) End() time.Time {
 	return fy.end
+}
+
+// DaysInPeriod calculates amount of days between start and end date (end date excluded).
+func DaysInPeriod(start, end time.Time) int {
+	days := end.Sub(start).Hours() / 24
+	return int(days)
 }
