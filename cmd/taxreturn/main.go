@@ -17,7 +17,7 @@ var (
 		Use:   "taxreturn",
 		Short: "taxreturn - tax and expenses calculator.",
 		Long:  "",
-		RunE:  tr,
+		RunE:  runRoot,
 	}
 )
 
@@ -29,7 +29,7 @@ func init() {
 	rootCmd.MarkFlagRequired("year")
 }
 
-func tr(cmd *cobra.Command, args []string) error {
+func runRoot(cmd *cobra.Command, args []string) error {
 	file, err := os.Open(recordsFile)
 	if err != nil {
 		return err
