@@ -1,5 +1,7 @@
 package taxreturn
 
+// TODO: add reports
+
 // Bill describes a bill for a period of time.
 type Bill struct {
 	Period BillPeriod

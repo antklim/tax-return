@@ -6,9 +6,6 @@ import (
 	"strconv"
 )
 
-// TODO: add test
-// TODO: add reports
-
 type csvField int
 
 const (
@@ -19,10 +16,10 @@ const (
 )
 
 // ReadCsv reads CSV file and maps it to Bills.
-func ReadCsv(file *os.File, headers bool) (Bills, error) {
+func ReadCsv(file *os.File, hasHeader bool) (Bills, error) {
 	reader := csv.NewReader(file)
 
-	if headers {
+	if hasHeader {
 		_, err := reader.Read()
 		if err != nil {
 			return nil, err
@@ -35,13 +32,12 @@ func ReadCsv(file *os.File, headers bool) (Bills, error) {
 	}
 
 	bills := make(Bills, len(records))
-	for _, record := range records {
+	for i, record := range records {
 		bill, err := csvRecordToBill(record)
 		if err != nil {
 			return nil, err
 		}
-
-		bills = append(bills, *bill)
+		bills[i] = *bill
 	}
 
 	return bills, nil
