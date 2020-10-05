@@ -58,3 +58,18 @@ func TestFinancialYearEnding(t *testing.T) {
 	assert.True(t, fy.Start().Equal(start))
 	assert.True(t, fy.End().Equal(end))
 }
+
+func TestPeriodCompare(t *testing.T) {
+	for _, tC := range periodCompareTestCases {
+		t.Run(tC.desc, func(t *testing.T) {
+			within := taxreturn.PeriodWithin(tC.p1, tC.p2)
+			assert.Equal(t, tC.within, within)
+			outside := taxreturn.PeriodOutside(tC.p1, tC.p2)
+			assert.Equal(t, tC.outside, outside)
+			overlapsStart := taxreturn.PeriodOverlapsStart(tC.p1, tC.p2)
+			assert.Equal(t, tC.overlapsStart, overlapsStart)
+			overlapsEnd := taxreturn.PeriodOverlapsEnd(tC.p1, tC.p2)
+			assert.Equal(t, tC.overlapsEnd, overlapsEnd)
+		})
+	}
+}

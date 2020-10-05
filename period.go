@@ -100,7 +100,6 @@ func DaysInPeriod(start, end time.Time) int {
 	return int(days)
 }
 
-// TODO: add tests
 // PeriodWithin retuns true when period a is within period b including period start and end dates.
 func PeriodWithin(a, b Period) bool {
 	return (a.Start().After(b.Start()) || a.Start().Equal(b.Start())) &&
