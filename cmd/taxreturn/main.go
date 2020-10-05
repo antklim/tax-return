@@ -40,8 +40,6 @@ func tr(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	fmt.Println(bills)
-
 	financialYear := taxreturn.FinancialYearEnding(year)
 	paid := bills.AmountPaidIn(financialYear)
 
