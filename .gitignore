@@ -13,3 +13,11 @@
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
+
+# Input directory for calculations
+in/
+
+# Build directory
+build/
+
+.DS_Store

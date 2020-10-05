@@ -6,16 +6,16 @@ import (
 
 var billPeriod, _ = taxreturn.NewBillPeriod("2020-01-15", "2020-02-14")
 var bill = taxreturn.Bill{
-	Period:    billPeriod,
-	AmountDue: 123.45,
-	Paid:      123.45,
+	Period: billPeriod,
+	Due:    123.45,
+	Paid:   123.45,
 }
 
 var billPeriodOverlaps, _ = taxreturn.NewBillPeriod("2020-06-15", "2020-07-14")
 var billOverlaps = taxreturn.Bill{
-	Period:    billPeriodOverlaps,
-	AmountDue: 678.45,
-	Paid:      567.45,
+	Period: billPeriodOverlaps,
+	Due:    678.45,
+	Paid:   567.45,
 }
 
 type billPaidInTestCase struct {

@@ -1,10 +1,12 @@
 package taxreturn
 
+// TODO: add reports
+
 // Bill describes a bill for a period of time.
 type Bill struct {
-	Period    BillPeriod
-	AmountDue float32
-	Paid      float32
+	Period BillPeriod
+	Due    float32
+	Paid   float32
 }
 
 // PaidDaily shows an average payment amount per day.
@@ -44,3 +46,14 @@ func (bb Bills) AmountPaidIn(p Period) float32 {
 
 	return sum
 }
+
+// Report generates bills report.
+// func (bb Bills) Report(p Period) string {
+// 	total := bb.AmountPaidIn(p)
+
+// 	for _, b := range bb {
+// 		period := fmt.Sprintf()
+// 	}
+
+// 	return fmt.Sprintln(total)
+// }
