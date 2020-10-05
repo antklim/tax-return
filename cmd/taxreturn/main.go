@@ -51,7 +51,7 @@ func tr(cmd *cobra.Command, args []string) error {
 func main() {
 	err := rootCmd.Execute()
 	if err != nil {
-		fmt.Println("Can't execute command:", err)
+		fmt.Print(err)
 		os.Exit(1)
 	}
 }
