@@ -10,7 +10,7 @@ import (
 
 var (
 	recordsFile string // path to the file with the bills records
-	noHeaders   bool
+	noHeader    bool
 	year        int
 
 	rootCmd = &cobra.Command{
@@ -24,7 +24,7 @@ var (
 func init() {
 	rootCmd.Flags().StringVarP(&recordsFile, "records", "r", "", "Path to the bills records file (required)")
 	rootCmd.Flags().IntVarP(&year, "year", "y", 0, "Financial year ending in (required)")
-	rootCmd.Flags().BoolVarP(&noHeaders, "noHeader", "H", false, "Records file does not have headers (default: false)")
+	rootCmd.Flags().BoolVarP(&noHeader, "noHeader", "H", false, "Records file does not have header (default: false)")
 	rootCmd.MarkFlagRequired("records")
 	rootCmd.MarkFlagRequired("year")
 }
@@ -35,7 +35,7 @@ func tr(cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	bills, err := taxreturn.ReadCsv(file, !noHeaders)
+	bills, err := taxreturn.ReadCsv(file, !noHeader)
 	if err != nil {
 		return err
 	}
