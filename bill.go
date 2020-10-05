@@ -1,5 +1,10 @@
 package taxreturn
 
+import (
+	"fmt"
+	"strings"
+)
+
 // TODO: add reports
 
 // Bill describes a bill for a period of time.
@@ -61,16 +66,35 @@ func (bills Bills) AmountPaidIn(p Period) float32 {
 }
 
 // Report generates bills report.
-// func (bills Bills) Report(p Period) (string, error) {
-// 	var b strings.Builder
+func (bills Bills) Report(p Period) (string, error) {
+	var b strings.Builder
 
-// 	// total := bb.AmountPaidIn(p)
+	period := fmt.Sprintf("Financial period: %s\n\nBills periods:\n", p.String())
+	if _, err := b.WriteString(period); err != nil {
+		return "", err
+	}
 
-// 	for _, b := range bills {
-// 		// s := b.Period.String()
-// 	}
+	for _, bill := range bills {
+		s := fmt.Sprintf(
+			"%s\t%10.3f (%d days x %6.3f per day)\n",
+			bill.Period.String(),
+			bill.PaidIn(p),
+			bill.BilledDaysIn(p),
+			bill.PaidDaily())
 
-// 	// return fmt.Sprintln(total)
+		if _, err := b.WriteString(s); err != nil {
+			return "", err
+		}
+	}
 
-// 	return b.String(), nil
-// }
+	if _, err := b.WriteString("===\n"); err != nil {
+		return "", err
+	}
+
+	total := fmt.Sprintf("Total paid in financial period\t$%.3f\n", bills.AmountPaidIn(p))
+	if _, err := b.WriteString(total); err != nil {
+		return "", err
+	}
+
+	return b.String(), nil
+}

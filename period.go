@@ -14,6 +14,7 @@ const (
 type Period interface {
 	Start() time.Time
 	End() time.Time
+	String() string
 }
 
 // BillPeriod describes date period.
