@@ -49,7 +49,6 @@ func TestReadCsv(t *testing.T) {
 			file, err := os.Open(tC.csvFile)
 			require.NoError(t, err)
 			actual, err := taxreturn.ReadCsv(file, tC.hasHeader)
-			t.Logf("actual len %d, expected len %d", len(actual), len(tC.expected))
 			require.NoError(t, err)
 			assert.ElementsMatch(t, tC.expected, actual)
 		})
