@@ -1,39 +1,49 @@
 package main
 
 import (
-	"encoding/csv"
 	"fmt"
 	"os"
 
+	taxreturn "github.com/antklim/tax-return"
 	"github.com/spf13/cobra"
 )
 
 var (
 	recordsFile string // path to the file with the bills records
+	year        int
 
 	rootCmd = &cobra.Command{
 		Use:   "taxreturn",
 		Short: "taxreturn - tax and expenses calculator.",
 		Long:  "",
-		RunE:  taxreturn,
+		RunE:  tr,
 	}
 )
 
 func init() {
 	rootCmd.Flags().StringVarP(&recordsFile, "records", "r", "", "Path to the bills records file (required)")
+	rootCmd.Flags().IntVarP(&year, "year", "y", 0, "Financial year ending in (required)")
 	rootCmd.MarkFlagRequired("records")
+	rootCmd.MarkFlagRequired("year")
 }
 
-func taxreturn(ccmd *cobra.Command, args []string) error {
-	recordFile, err := os.Open(recordsFile)
+func tr(cmd *cobra.Command, args []string) error {
+	file, err := os.Open(recordsFile)
 	if err != nil {
 		return err
 	}
 
-	reader := csv.NewReader(recordFile)
-	records, err := reader.ReadAll()
+	bills, err := taxreturn.ReadCsv(file)
+	if err != nil {
+		return err
+	}
 
-	fmt.Println(records)
+	fmt.Println(bills)
+
+	financialYear := taxreturn.FinancialYearEnding(year)
+	paid := bills.AmountPaidIn(financialYear)
+
+	fmt.Println(paid)
 
 	return nil
 }
