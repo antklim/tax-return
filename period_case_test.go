@@ -17,6 +17,10 @@ func (p testPeriod) End() time.Time {
 	return p.end
 }
 
+func (p testPeriod) String() string {
+	return ""
+}
+
 type periodCompareTestCase struct {
 	desc          string
 	p1            testPeriod
