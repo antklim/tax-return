@@ -16,3 +16,8 @@
 
 # Input directory for calculations
 in/
+
+# Build directory
+build/
+
+.DS_Store
