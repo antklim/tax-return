@@ -41,9 +41,12 @@ func runRoot(cmd *cobra.Command, args []string) error {
 	}
 
 	financialYear := taxreturn.FinancialYearEnding(year)
-	paid := bills.AmountPaidIn(financialYear)
+	report, err := bills.Report(financialYear)
+	if err != nil {
+		return err
+	}
 
-	fmt.Println(paid)
+	fmt.Println(report)
 
 	return nil
 }

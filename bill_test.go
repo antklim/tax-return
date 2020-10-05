@@ -21,11 +21,19 @@ func TestPaidDaily(t *testing.T) {
 	assert.Equal(t, float32(40.0), actual)
 }
 
+func TestBilledDaysIn(t *testing.T) {
+	for _, tC := range billedDaysInTestCases {
+		t.Run(tC.desc, func(t *testing.T) {
+			actual := tC.bill.BilledDaysIn(tC.period)
+			assert.Equal(t, tC.expected, actual)
+		})
+	}
+}
+
 func TestPaidIn(t *testing.T) {
-	for _, tC := range billPaidInTestCases {
+	for _, tC := range paidInTestCases {
 		t.Run(tC.desc, func(t *testing.T) {
 			actual := tC.bill.PaidIn(tC.period)
-			t.Logf("%.3f", actual)
 			assert.InDelta(t, tC.expected, actual, 0.0001)
 		})
 	}

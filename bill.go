@@ -1,6 +1,9 @@
 package taxreturn
 
-// TODO: add reports
+import (
+	"fmt"
+	"strings"
+)
 
 // Bill describes a bill for a period of time.
 type Bill struct {
@@ -15,21 +18,34 @@ func (b Bill) PaidDaily() float32 {
 	return b.Paid / float32(days)
 }
 
+// BilledDaysIn caclulates how many billed days were in provided period.
+func (b Bill) BilledDaysIn(p Period) int {
+	var days int
+
+	switch {
+	case PeriodOutside(b.Period, p):
+		days = 0
+	case PeriodOverlapsStart(b.Period, p):
+		days = DaysInPeriod(p.Start(), b.Period.End()) + 1
+	case PeriodOverlapsEnd(b.Period, p):
+		days = DaysInPeriod(b.Period.Start(), p.End()) + 1
+	default:
+		days = b.Period.Days()
+	}
+
+	return days
+}
+
 // PaidIn returns amount paid in period.
 func (b Bill) PaidIn(p Period) float32 {
 	var paid float32
-	switch {
-	case b.Period.Start().After(p.End()), b.Period.End().Before(p.Start()):
-		paid = 0.0
-	case b.Period.Start().Before(p.Start()) && b.Period.End().After(p.Start()):
-		days := DaysInPeriod(p.Start(), b.Period.End()) + 1
-		paid = b.PaidDaily() * float32(days)
-	case b.Period.Start().Before(p.End()) && b.Period.End().After(p.End()):
-		days := DaysInPeriod(b.Period.Start(), p.End()) + 1
-		paid = b.PaidDaily() * float32(days)
-	default:
+
+	if PeriodWithin(b.Period, p) {
 		paid = b.Paid
+	} else {
+		paid = b.PaidDaily() * float32(b.BilledDaysIn(p))
 	}
+
 	return paid
 }
 
@@ -37,10 +53,10 @@ func (b Bill) PaidIn(p Period) float32 {
 type Bills []Bill
 
 // AmountPaidIn returns amount paid in financial year by the list of bills.
-func (bb Bills) AmountPaidIn(p Period) float32 {
+func (bills Bills) AmountPaidIn(p Period) float32 {
 	var sum float32 = 0.0
 
-	for _, b := range bb {
+	for _, b := range bills {
 		sum += b.PaidIn(p)
 	}
 
@@ -48,12 +64,35 @@ func (bb Bills) AmountPaidIn(p Period) float32 {
 }
 
 // Report generates bills report.
-// func (bb Bills) Report(p Period) string {
-// 	total := bb.AmountPaidIn(p)
+func (bills Bills) Report(p Period) (string, error) {
+	var b strings.Builder
 
-// 	for _, b := range bb {
-// 		period := fmt.Sprintf()
-// 	}
+	period := fmt.Sprintf("Financial period: %s\n\nBills periods:\n", p.String())
+	if _, err := b.WriteString(period); err != nil {
+		return "", err
+	}
 
-// 	return fmt.Sprintln(total)
-// }
+	for _, bill := range bills {
+		s := fmt.Sprintf(
+			"%s\t%10.3f (%d days x %6.3f per day)\n",
+			bill.Period.String(),
+			bill.PaidIn(p),
+			bill.BilledDaysIn(p),
+			bill.PaidDaily())
+
+		if _, err := b.WriteString(s); err != nil {
+			return "", err
+		}
+	}
+
+	if _, err := b.WriteString("===\n"); err != nil {
+		return "", err
+	}
+
+	total := fmt.Sprintf("Total paid in financial period\t$%.3f\n", bills.AmountPaidIn(p))
+	if _, err := b.WriteString(total); err != nil {
+		return "", err
+	}
+
+	return b.String(), nil
+}
