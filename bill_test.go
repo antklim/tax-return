@@ -13,9 +13,9 @@ func TestPaidDaily(t *testing.T) {
 	require.NoError(t, err)
 
 	bill := taxreturn.Bill{
-		Period:    period,
-		AmountDue: 100.0,
-		Paid:      120.0,
+		Period: period,
+		Due:    100.0,
+		Paid:   120.0,
 	}
 	actual := bill.PaidDaily()
 	assert.Equal(t, float32(40.0), actual)

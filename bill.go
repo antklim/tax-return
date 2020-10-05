@@ -2,9 +2,9 @@ package taxreturn
 
 // Bill describes a bill for a period of time.
 type Bill struct {
-	Period    BillPeriod
-	AmountDue float32
-	Paid      float32
+	Period BillPeriod
+	Due    float32
+	Paid   float32
 }
 
 // PaidDaily shows an average payment amount per day.
